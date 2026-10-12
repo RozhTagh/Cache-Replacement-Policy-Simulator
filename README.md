@@ -4,7 +4,7 @@
 
 This project implements and compares six cache-management strategies using real block-level storage access traces. It was developed as an **Operating Systems course project** to investigate how recency, frequency, adaptive replacement, and knowledge of future accesses affect cache hit rates.
 
-The original experiment evaluated **four datasets: `A42.csv`, `A108.csv`, `A129.csv`, and `A669.csv`**. To keep the public repository focused and manageable, **only the full `A42.csv` trace is distributed**; the results from all four experiments are retained in the report and summarized below.
+The original experiment evaluated **four datasets: `A42.csv`, `A108.csv`, `A129.csv`, and `A669.csv`**. To keep the public repository focused and manageable, **only the A42 trace is shared, as a compressed ZIP archive (`A42.zip`)**. Extract the archive to obtain `A42.csv` before running the simulator. Results from all four original experiments are retained in the report and summarized below.
 
 The accompanying [project report](Document.pdf) (in Persian) describes the methodology, implementation, and detailed results.
 
@@ -27,20 +27,18 @@ The accompanying [project report](Document.pdf) (in Persian) describes the metho
 | **LARC (Lazy Adaptive Replacement Cache)** | Uses an ARC-like structure with deferred maintenance, as implemented for this course project. |
 | **Belady's Optimal** | Uses future requests to choose an eviction victim; provides an **offline theoretical benchmark**, not an implementable online policy. |
 
-> These are the educational implementations in [`code.py`](code.py); the policy names do not imply identical behavior to every other published implementation.
-
 ## Repository structure
 
 ```text
 cache-replacement-policy-simulator/
 ├── code.py            # Trace loader and the six policy simulators
-├── A42.csv            # Public trace (add the original full file here)
+├── A42.zip            # Compressed public trace
 ├── Document.pdf       # Full course report (Persian)
 ├── requirements.txt   # Python dependencies
 └── README.md
 ```
 
-**Dataset availability:** The experiment used `A42.csv`, `A108.csv`, `A129.csv`, and `A669.csv`. The repository is intended to contain **only `A42.csv`**. The other three were used for the reported comparisons but are not redistributed. If you downloaded a source bundle without `A42.csv`, obtain the full A42 trace separately before running the simulator; the example rows below are for documentation only.
+**Dataset availability:** The original experiment used `A42.csv`, `A108.csv`, `A129.csv`, and `A669.csv`. This repository includes **`A42.zip`**, containing the complete `A42.csv` dataset in compressed form; the other three traces are not redistributed. The example rows below illustrate the format and are not substitutes for the full trace. The extracted `A42.csv` is intentionally excluded from version control to avoid storing duplicate copies.
 
 ## Getting started
 
@@ -79,6 +77,22 @@ python -m pip install -r requirements.txt
 ```
 
 On systems that use `python3` or `py` instead of `python`, substitute that command throughout.
+
+### Extract the A42 dataset
+
+The dataset is provided as **`A42.zip`** to reduce the repository size. The simulator reads the **uncompressed** `A42.csv`, not the ZIP file. After cloning the repository and entering its root directory, extract the archive:
+
+**macOS / Linux**
+
+```bash
+unzip A42.zip
+```
+
+**Windows (PowerShell)**
+
+```powershell
+Expand-Archive -Path .\A42.zip -DestinationPath . -Force
+```
 
 ### Run the A42 experiment
 
@@ -195,12 +209,3 @@ N-Hit achieved the highest reported hit rate **among the online policies** on A4
 **Interpretation:** The relative ranking changes with the workload. N-Hit leads the practical policies on A42, while LARC leads them on A108, A129, and A669. Belady's Optimal performs best in all four traces, as expected given its access to future requests.
 
 **Reproducibility:** Only A42 is intended to be downloadable from this repository. The values for A108, A129, and A669 document the original experiments; reproducing those runs requires the corresponding trace files, which are not included. For complete read/write breakdowns, see [the project report](Document.pdf).
-
-## Notes and limitations
-
-- The project is a **course/research simulator**, not a production cache implementation or an optimized benchmarking framework.
-- The code uses minimal CSV validation and assumes a correctly formatted, headerless input file with the expected columns and operations.
-- Cache size is inferred from the observed address range; it is not a measured hardware-cache configuration, and very short traces can produce zero capacity.
-- The main program is configured in source rather than through command-line options.
-- Belady's Optimal requires future trace information and can incur considerable memory/time overhead.
-- Outcomes depend on request ordering, the selected time window, cache capacity, and policy-specific behavior. They should not be generalized to every storage workload.
